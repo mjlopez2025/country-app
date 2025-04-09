@@ -4,9 +4,15 @@ import { HomePageComponent } from './shared/pages/home-page/home-page.component'
 export const routes: Routes = [
 
   {
-    path: "",
+    path: '',
     component: HomePageComponent,
+  },
+  {
+    path: 'country',
+    loadChildren: () => import('./country/country.routes')
+  },
+  {
+    path: '**',
+    redirectTo: '',
   }
-
-
 ];
