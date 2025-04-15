@@ -14,17 +14,14 @@ export class CountryService {
   private http = inject(HttpClient);
 
   private queryCacheCapital = new Map<string, Country[]>()
+  private queryCacheCountry = new Map<string, Country[]>()
 
   searchByCapital (query: string): Observable<Country[]> {
     query = query.toLowerCase();
 
-    console.log(this.queryCacheCapital);
-
     if(this.queryCacheCapital.has(query)) {
       return of(this.queryCacheCapital.get(query)?? []);
     }
-    console.log(`Llegando al servidor por ${query}`);
-
 
     return this.http.get<RESTCountry[]>(`${API_URL}/capital/${query}`)
     .pipe(
@@ -44,11 +41,19 @@ export class CountryService {
     const url = `${API_URL}/name/${query}`
     query = query.toLowerCase();
 
+    console.log(this.queryCacheCountry);
+
+    if(this.queryCacheCountry.has(query)) {
+      return of(this.queryCacheCountry.get(query)?? []);
+    }
+
+    console.log(`Llegando al servidor por ${query}`);
 
     return this.http.get<RESTCountry[]>(url)
     .pipe(
       map((resp) => CountryMapper.mapRestCountryArrayToCountryArray(resp)),
-      delay(2000),
+      tap( countries => this.queryCacheCountry.set(query, countries)),
+      delay(1000),
       catchError(error => {
         console.log('Error Fetching', error);
 
