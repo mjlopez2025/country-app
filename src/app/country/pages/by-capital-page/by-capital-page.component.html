@@ -3,6 +3,7 @@
 placeholder="Buscar por capital "
 (value)="query.set($event)"
 [debounceTime]="300"
+[initialValue]="query()"
 />
 
 <country-list
